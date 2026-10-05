@@ -1,0 +1,1337 @@
+/**
+ * ZAVLO TECHNOLOGIES — MAIN STYLESHEET (STAGE 6 CLEAN CORE & RESPONSIVE REFINEMENT)
+ * Healthcare-technology visual language: deep near-black void, sapphire-cyan-teal gradients,
+ * subtle glass surfaces, crisp typography, and mobile-optimized layouts
+ */
+
+@import './tokens.css';
+
+/* --------------------------------------------------------------------------
+   1. Document & Body Reset
+   -------------------------------------------------------------------------- */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-family: var(--zavlo-font-sans);
+  font-size: 16px;
+  line-height: var(--zavlo-leading-normal);
+  color: var(--zavlo-text-primary);
+  background-color: var(--zavlo-bg-void);
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+body {
+  position: relative;
+  min-height: 100vh;
+  min-height: 100dvh;
+  background-color: var(--zavlo-bg-void);
+  overflow-x: hidden;
+  width: 100%;
+}
+
+img, svg, video {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+button, input, select, textarea {
+  font: inherit;
+  color: inherit;
+}
+
+/* --------------------------------------------------------------------------
+   2. Typography Helpers
+   -------------------------------------------------------------------------- */
+.text-gradient {
+  background: var(--zavlo-grad-ribbon);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: inline-block;
+}
+
+.text-gradient-cyan {
+  background: linear-gradient(135deg, var(--zavlo-cyan-300), var(--zavlo-teal-400));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: inline-block;
+}
+
+/* --------------------------------------------------------------------------
+   3. Global Fixed 3D Viewport Layer, Scroll Progress & Atmosphere
+   -------------------------------------------------------------------------- */
+.zavlo-scroll-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: linear-gradient(90deg, var(--zavlo-sapphire-500) 0%, var(--zavlo-cyan-400) 50%, var(--zavlo-teal-400) 100%);
+  box-shadow: 0 0 10px rgba(0, 240, 181, 0.4);
+  transform-origin: left;
+  transform: scaleX(0);
+  z-index: 1000;
+  pointer-events: none;
+  will-change: transform;
+}
+
+.webgl-container {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh;
+  z-index: var(--zavlo-z-3d-scene);
+  pointer-events: none;
+  overflow: hidden;
+}
+
+#hero-webgl-canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.webgl-container.webgl-fallback-active {
+  background: radial-gradient(circle at 60% 40%, rgba(0, 194, 255, 0.15) 0%, rgba(0, 240, 181, 0.05) 40%, transparent 70%),
+              url('../assets/images/zavlo-emblem.png') no-repeat 65% 45% / 420px;
+}
+
+.zavlo-ambient-layer {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: var(--zavlo-z-void);
+  overflow: hidden;
+}
+
+.zavlo-ambient-bloom {
+  position: absolute;
+  top: 30%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 75vw;
+  height: 75vh;
+  max-width: 800px;
+  max-height: 800px;
+  background: var(--zavlo-grad-glow-ambient);
+  filter: blur(90px);
+}
+
+/* --------------------------------------------------------------------------
+   4. Navigation Header (High-End Medical Technology Glass Pill)
+   -------------------------------------------------------------------------- */
+.zavlo-header {
+  position: fixed;
+  top: 1rem;
+  left: 0;
+  width: 100%;
+  padding: 0 1.25rem;
+  padding-top: env(safe-area-inset-top, 0);
+  z-index: var(--zavlo-z-header);
+  pointer-events: none;
+  transition: transform 0.4s var(--zavlo-ease-out-expo);
+}
+
+.nav-pill-container {
+  max-width: 1140px;
+  height: 58px;
+  margin: 0 auto;
+  padding: 0 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  white-space: nowrap;
+  background: rgba(6, 11, 22, 0.68);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--zavlo-radius-full);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 16px 36px -10px rgba(0, 0, 0, 0.7);
+  pointer-events: auto;
+  transition: background 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease, transform 0.35s ease;
+}
+
+.zavlo-header.scrolled .nav-pill-container {
+  background: rgba(4, 7, 15, 0.90);
+  border-color: rgba(0, 194, 255, 0.22);
+  box-shadow: inset 0 1px 0 rgba(0, 194, 255, 0.15), 0 20px 45px -10px rgba(0, 0, 0, 0.85), 0 0 1px rgba(0, 240, 181, 0.3);
+}
+
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  height: 100%;
+  flex-shrink: 0;
+  white-space: nowrap;
+  text-decoration: none;
+  transition: opacity 0.2s ease;
+}
+
+.nav-logo:hover {
+  opacity: 0.9;
+}
+
+.nav-logo-svg {
+  width: 24px;
+  height: 24px;
+  filter: drop-shadow(0 0 8px rgba(0, 194, 255, 0.4));
+}
+
+.nav-logo-text {
+  font-size: 0.95rem;
+  font-weight: var(--zavlo-font-weight-extrabold);
+  letter-spacing: 0.22em;
+  color: var(--zavlo-text-primary);
+}
+
+.nav-menu {
+  display: flex;
+  align-items: center;
+  gap: clamp(0.45rem, 1.0vw, 1.25rem);
+  list-style: none;
+  flex-shrink: 1;
+  min-width: 0;
+}
+
+.nav-link {
+  font-size: clamp(0.72rem, 0.8vw, 0.78rem);
+  font-weight: var(--zavlo-font-weight-medium);
+  letter-spacing: 0.06em;
+  color: rgba(209, 219, 232, 0.65);
+  padding: 0.4rem 0.2rem;
+  position: relative;
+  text-decoration: none;
+  display: inline-block;
+  white-space: nowrap;
+  transition: color 0.2s var(--zavlo-ease-out-expo), transform 0.2s var(--zavlo-ease-out-expo);
+}
+
+.nav-link:hover {
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
+.nav-link.active {
+  color: #ffffff;
+  font-weight: var(--zavlo-font-weight-semibold);
+}
+
+.nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: 0px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--zavlo-cyan-400), var(--zavlo-teal-400));
+  border-radius: 2px;
+  box-shadow: 0 0 8px rgba(0, 240, 181, 0.6);
+  transition: width 0.28s var(--zavlo-ease-out-expo), opacity 0.28s ease;
+  opacity: 0;
+}
+
+.nav-link:hover::after,
+.nav-link.active::after {
+  width: 100%;
+  opacity: 1;
+}
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.mobile-toggle {
+  display: none;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--zavlo-radius-full);
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  min-height: 44px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  cursor: pointer;
+  padding: 0;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.mobile-toggle:hover {
+  background: rgba(0, 194, 255, 0.1);
+  border-color: rgba(0, 194, 255, 0.3);
+}
+
+.hamburger-line {
+  width: 18px;
+  height: 2px;
+  background-color: var(--zavlo-text-primary);
+  border-radius: 2px;
+  transition: transform 0.3s var(--zavlo-ease-out-expo), opacity 0.3s var(--zavlo-ease-out-expo);
+}
+
+/* Mobile Fullscreen Navigation Overlay */
+.mobile-nav-overlay {
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(circle at 50% 30%, rgba(6, 18, 44, 0.98) 0%, rgba(3, 5, 8, 0.99) 100%);
+  backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
+  z-index: calc(var(--zavlo-z-header) - 1);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.35s var(--zavlo-ease-smooth), visibility 0.35s;
+  visibility: hidden;
+}
+
+.mobile-nav-overlay.active {
+  opacity: 1;
+  pointer-events: auto;
+  visibility: visible;
+}
+
+.mobile-nav-menu {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.9rem;
+  max-height: 80vh;
+  overflow-y: auto;
+  width: 100%;
+  max-width: 320px;
+}
+
+.mobile-nav-link {
+  font-size: 1.15rem;
+  font-weight: var(--zavlo-font-weight-semibold);
+  letter-spacing: 0.08em;
+  color: var(--zavlo-text-secondary);
+  text-decoration: none;
+  padding: 0.5rem 1.25rem;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--zavlo-radius-full);
+  width: 100%;
+  border: 1px solid transparent;
+  transition: all 0.25s var(--zavlo-ease-out-expo);
+}
+
+.mobile-nav-link:hover, .mobile-nav-link.active {
+  color: #ffffff;
+  background: rgba(0, 194, 255, 0.08);
+  border-color: rgba(0, 240, 181, 0.3);
+  box-shadow: 0 0 15px rgba(0, 240, 181, 0.15);
+}
+
+/* --------------------------------------------------------------------------
+   5. Buttons & Badges
+   -------------------------------------------------------------------------- */
+.zavlo-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.625rem;
+  min-height: 46px;
+  padding: 0 1.75rem;
+  border-radius: var(--zavlo-radius-full);
+  font-family: var(--zavlo-font-sans);
+  font-size: var(--zavlo-text-body-sm);
+  font-weight: var(--zavlo-font-weight-semibold);
+  letter-spacing: var(--zavlo-tracking-wider);
+  text-decoration: none;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: all var(--zavlo-dur-fast) var(--zavlo-ease-out);
+  overflow: hidden;
+  text-align: center;
+}
+
+.zavlo-btn-nav {
+  min-height: 36px;
+  padding: 0 1.25rem;
+  background: linear-gradient(135deg, rgba(0, 102, 255, 0.18) 0%, rgba(0, 194, 255, 0.12) 100%);
+  border: 1px solid rgba(0, 194, 255, 0.32);
+  color: var(--zavlo-text-primary);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  border-radius: var(--zavlo-radius-full);
+  box-shadow: 0 0 10px rgba(0, 194, 255, 0.12);
+  transition: all 0.25s var(--zavlo-ease-out-expo);
+}
+
+.zavlo-btn-nav:hover {
+  border-color: var(--zavlo-teal-400);
+  background: linear-gradient(135deg, rgba(0, 194, 255, 0.25) 0%, rgba(0, 240, 181, 0.22) 100%);
+  box-shadow: 0 0 18px rgba(0, 240, 181, 0.35), inset 0 0 8px rgba(0, 240, 181, 0.15);
+  transform: translateY(-1px);
+}
+
+.zavlo-btn-primary {
+  background: var(--zavlo-bg-surface);
+  color: var(--zavlo-text-primary);
+  border: 1px solid var(--zavlo-border-teal);
+  box-shadow: var(--zavlo-glow-teal-sm);
+}
+
+.zavlo-btn-primary .btn-glow {
+  position: absolute;
+  inset: 0;
+  background: var(--zavlo-grad-ribbon);
+  opacity: 0.12;
+  transition: opacity var(--zavlo-dur-fast) var(--zavlo-ease-out);
+  z-index: 1;
+}
+
+.zavlo-btn-primary .btn-text,
+.zavlo-btn-primary svg {
+  position: relative;
+  z-index: 2;
+}
+
+.zavlo-btn-primary:hover {
+  transform: translateY(-2px);
+  border-color: var(--zavlo-teal-400);
+  box-shadow: var(--zavlo-glow-teal-lg);
+}
+
+.zavlo-btn-primary:hover .btn-glow { opacity: 0.25; }
+
+.zavlo-btn-secondary {
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--zavlo-text-secondary);
+  border: 1px solid var(--zavlo-border-subtle);
+  backdrop-filter: blur(10px);
+}
+
+.zavlo-btn-secondary:hover {
+  color: var(--zavlo-text-primary);
+  border-color: var(--zavlo-border-light);
+  background: rgba(255, 255, 255, 0.08);
+  transform: translateY(-1px);
+}
+
+.zavlo-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: var(--zavlo-text-caption);
+  font-weight: var(--zavlo-font-weight-bold);
+  letter-spacing: var(--zavlo-tracking-widest);
+  text-transform: uppercase;
+  color: var(--zavlo-teal-400);
+  background: rgba(0, 240, 181, 0.08);
+  border: 1px solid var(--zavlo-border-teal);
+  padding: 0.35rem 0.85rem;
+  border-radius: var(--zavlo-radius-full);
+}
+
+/* --------------------------------------------------------------------------
+   6. Hero Section
+   -------------------------------------------------------------------------- */
+.hero-section {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  min-height: 100svh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 6rem 1.5rem 2.5rem;
+  z-index: var(--zavlo-z-content);
+  overflow: hidden;
+}
+
+.hero-overlay {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  width: 100%;
+  max-width: var(--zavlo-max-width-site);
+  min-height: calc(100svh - 7rem);
+  pointer-events: none;
+}
+
+.hero-content-center {
+  pointer-events: auto;
+  margin-top: auto;
+  padding-top: clamp(34vh, 44vh, 50vh);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  max-width: 820px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.hero-wordmark-badge { margin-bottom: 0.85rem; }
+
+.hero-cinematic-title {
+  font-size: clamp(2.1rem, 5.2vw, 4.25rem);
+  font-weight: 800;
+  line-height: 1.08;
+  letter-spacing: -0.025em;
+  text-transform: uppercase;
+  color: var(--zavlo-text-primary);
+  margin-bottom: 1rem;
+}
+
+.hero-tagline {
+  font-size: clamp(0.9375rem, 1.8vw, 1.15rem);
+  color: var(--zavlo-text-secondary);
+  line-height: var(--zavlo-leading-relaxed);
+  max-width: 580px;
+  margin-bottom: 2rem;
+}
+
+.hero-cinematic-cta {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+
+.scroll-prompt {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  opacity: 0.8;
+  transition: opacity 0.3s var(--zavlo-ease-out);
+}
+
+.scroll-prompt-text {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.3em;
+  color: var(--zavlo-text-dim);
+  text-transform: uppercase;
+}
+
+.scroll-prompt-line {
+  position: relative;
+  width: 1px;
+  height: 32px;
+  background: rgba(255, 255, 255, 0.1);
+  overflow: hidden;
+}
+
+.scroll-prompt-dot {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 50%;
+  background: linear-gradient(180deg, var(--zavlo-cyan-400), var(--zavlo-teal-400));
+  animation: scrollPulse 2.5s infinite ease-in-out;
+}
+
+@keyframes scrollPulse {
+  0% { transform: translateY(-100%); }
+  50% { transform: translateY(100%); }
+  100% { transform: translateY(200%); }
+}
+
+/* --------------------------------------------------------------------------
+   7. Structured Section Containers & Layout
+   -------------------------------------------------------------------------- */
+.site-main-track {
+  position: relative;
+  width: 100%;
+  z-index: 10;
+}
+
+.zavlo-section {
+  position: relative;
+  z-index: var(--zavlo-z-content);
+  padding: clamp(4.5rem, 10vh, 8rem) 0;
+  background: transparent;
+}
+
+.zavlo-container {
+  max-width: var(--zavlo-max-width-site);
+  margin: 0 auto;
+  padding: 0 max(1.5rem, env(safe-area-inset-left, 0));
+  width: 100%;
+}
+
+.section-header { margin-bottom: clamp(2.5rem, 5vw, 4rem); }
+
+.section-header.center {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.section-title {
+  font-size: clamp(1.85rem, 3.8vw, 3rem);
+  font-weight: 800;
+  letter-spacing: var(--zavlo-tracking-tight);
+  line-height: 1.15;
+  margin-top: 0.85rem;
+  margin-bottom: 1rem;
+}
+
+.section-subtitle {
+  font-size: clamp(0.9375rem, 1.6vw, 1.125rem);
+  color: var(--zavlo-text-muted);
+  max-width: 640px;
+  line-height: var(--zavlo-leading-relaxed);
+}
+
+/* --------------------------------------------------------------------------
+   8. Mission Challenges Grid
+   -------------------------------------------------------------------------- */
+.challenges-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1.25rem;
+  width: 100%;
+}
+
+.challenge-pill {
+  background: rgba(10, 16, 29, 0.6);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--zavlo-border-subtle);
+  padding: 1.5rem 1.25rem;
+  border-radius: var(--zavlo-radius-md);
+  display: flex;
+  flex-direction: column;
+  transition: all var(--zavlo-dur-fast) var(--zavlo-ease-out);
+}
+
+.challenge-pill:hover {
+  border-color: var(--zavlo-border-teal);
+  transform: translateY(-2px);
+}
+
+.challenge-num {
+  font-family: var(--zavlo-font-mono);
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--zavlo-teal-400);
+  margin-bottom: 0.5rem;
+}
+
+.challenge-title {
+  font-size: 1rem;
+  font-weight: var(--zavlo-font-weight-bold);
+  color: var(--zavlo-text-primary);
+  margin-bottom: 0.4rem;
+}
+
+.challenge-desc {
+  font-size: 0.8125rem;
+  color: var(--zavlo-text-muted);
+  line-height: 1.55;
+}
+
+/* --------------------------------------------------------------------------
+   9. Ecosystem Matrix (Pillars 01-04)
+   -------------------------------------------------------------------------- */
+.ecosystem-matrix {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1px;
+  background: var(--zavlo-border-subtle);
+  border: 1px solid var(--zavlo-border-subtle);
+  border-radius: var(--zavlo-radius-lg);
+  overflow: hidden;
+  backdrop-filter: blur(12px);
+}
+
+.ecosystem-node {
+  background: rgba(8, 14, 27, 0.65);
+  padding: clamp(1.75rem, 3vw, 2.75rem) clamp(1.25rem, 2vw, 1.75rem);
+  display: flex;
+  flex-direction: column;
+  transition: all var(--zavlo-dur-med) var(--zavlo-ease-out);
+}
+
+.ecosystem-node:hover {
+  background: rgba(12, 21, 39, 0.85);
+}
+
+.node-number {
+  font-size: 0.875rem;
+  font-family: var(--zavlo-font-mono);
+  font-weight: var(--zavlo-font-weight-bold);
+  color: var(--zavlo-text-dim);
+  margin-bottom: 1.5rem;
+  transition: color var(--zavlo-dur-fast) var(--zavlo-ease-out);
+}
+
+.ecosystem-node:hover .node-number { color: var(--zavlo-teal-400); }
+
+.node-title {
+  font-size: 1.125rem;
+  font-weight: var(--zavlo-font-weight-bold);
+  letter-spacing: var(--zavlo-tracking-tight);
+  color: var(--zavlo-text-primary);
+  margin-bottom: 0.75rem;
+}
+
+.node-desc {
+  font-size: 0.875rem;
+  color: var(--zavlo-text-muted);
+  line-height: 1.65;
+}
+
+/* --------------------------------------------------------------------------
+   10. Showcase / Product Split Layouts
+   -------------------------------------------------------------------------- */
+.showcase-grid {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: clamp(2.5rem, 5vw, 5rem);
+  align-items: center;
+}
+
+.showcase-grid.reverse { grid-template-columns: 1fr 1.1fr; }
+
+.spec-pills-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-top: 1.75rem;
+}
+
+.spec-card {
+  background: rgba(10, 16, 29, 0.6);
+  backdrop-filter: blur(16px);
+  border: 1px solid var(--zavlo-border-subtle);
+  padding: 1.125rem;
+  border-radius: var(--zavlo-radius-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  transition: border-color var(--zavlo-dur-fast) var(--zavlo-ease-out),
+              transform var(--zavlo-dur-fast) var(--zavlo-ease-out);
+}
+
+.spec-card:hover {
+  border-color: var(--zavlo-border-teal);
+  transform: translateY(-2px);
+}
+
+.spec-tag {
+  font-size: var(--zavlo-text-micro);
+  font-weight: var(--zavlo-font-weight-bold);
+  letter-spacing: var(--zavlo-tracking-wider);
+  color: var(--zavlo-teal-400);
+  text-transform: uppercase;
+}
+
+.spec-val {
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: var(--zavlo-text-primary);
+}
+
+.spec-detail {
+  font-size: 0.8125rem;
+  color: var(--zavlo-text-secondary);
+  line-height: 1.45;
+}
+
+.glass-visual-card {
+  background: rgba(10, 16, 29, 0.55);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--zavlo-border-subtle);
+  border-radius: var(--zavlo-radius-lg);
+  padding: 2.25rem 1.75rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 1rem;
+  min-height: 240px;
+}
+
+.visual-status-pill {
+  display: inline-block;
+  font-size: 0.6875rem;
+  font-family: var(--zavlo-font-mono);
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  color: var(--zavlo-teal-400);
+  background: rgba(0, 240, 181, 0.08);
+  border: 1px solid var(--zavlo-border-teal);
+  padding: 0.35rem 0.85rem;
+  border-radius: var(--zavlo-radius-full);
+}
+
+.visual-card-hint {
+  font-size: 0.8125rem;
+  color: var(--zavlo-text-muted);
+  max-width: 280px;
+  line-height: 1.5;
+}
+
+.showcase-img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: var(--zavlo-radius-md);
+  object-fit: cover;
+}
+
+.glass-visual-card--wide {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 1rem;
+  min-height: auto;
+}
+
+.digital-platform-visual {
+  margin-top: 2.5rem;
+  margin-bottom: 0.5rem;
+}
+
+/* --------------------------------------------------------------------------
+   11. Digital Health Workflow Pipeline
+   -------------------------------------------------------------------------- */
+.workflow-pipeline {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  background: rgba(10, 16, 29, 0.6);
+  backdrop-filter: blur(16px);
+  border: 1px solid var(--zavlo-border-subtle);
+  border-radius: var(--zavlo-radius-lg);
+  padding: 1.75rem 2rem;
+  margin-top: 2rem;
+  overflow-x: auto;
+}
+
+.pipeline-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  text-align: center;
+  min-width: 120px;
+}
+
+.pipeline-icon-circle {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(0, 194, 255, 0.1);
+  border: 1px solid var(--zavlo-border-cyan);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--zavlo-teal-400);
+  font-family: var(--zavlo-font-mono);
+  font-weight: 700;
+  font-size: 0.875rem;
+}
+
+.pipeline-name {
+  font-size: 0.75rem;
+  font-weight: var(--zavlo-font-weight-bold);
+  letter-spacing: var(--zavlo-tracking-wider);
+  color: var(--zavlo-text-secondary);
+  text-transform: uppercase;
+}
+
+.pipeline-connector {
+  flex: 1;
+  height: 2px;
+  background: linear-gradient(90deg, var(--zavlo-cyan-500), var(--zavlo-teal-400));
+  min-width: 30px;
+  opacity: 0.4;
+}
+
+/* --------------------------------------------------------------------------
+   12. Tech Matrix (Infrastructure)
+   -------------------------------------------------------------------------- */
+.tech-matrix {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1px;
+  background: var(--zavlo-border-subtle);
+  border: 1px solid var(--zavlo-border-subtle);
+  border-radius: var(--zavlo-radius-lg);
+  overflow: hidden;
+  backdrop-filter: blur(12px);
+}
+
+.tech-cell {
+  background: rgba(8, 14, 27, 0.65);
+  padding: clamp(1.75rem, 2.5vw, 2.25rem) clamp(1.25rem, 2vw, 1.75rem);
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  transition: all var(--zavlo-dur-fast) var(--zavlo-ease-out);
+}
+
+.tech-cell:hover {
+  background: rgba(12, 21, 39, 0.85);
+  transform: translateY(-2px);
+}
+
+.tech-status-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.tech-tag {
+  font-size: var(--zavlo-text-micro);
+  font-family: var(--zavlo-font-mono);
+  color: var(--zavlo-cyan-400);
+  font-weight: var(--zavlo-font-weight-bold);
+}
+
+.tech-status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: var(--zavlo-teal-400);
+  box-shadow: 0 0 8px var(--zavlo-teal-400);
+}
+
+.tech-cell-title {
+  font-size: 1rem;
+  font-weight: var(--zavlo-font-weight-bold);
+  letter-spacing: var(--zavlo-tracking-wide);
+  color: var(--zavlo-text-primary);
+}
+
+.tech-cell-desc {
+  font-size: 0.875rem;
+  color: var(--zavlo-text-muted);
+  line-height: 1.6;
+}
+
+/* --------------------------------------------------------------------------
+   13. Founder Section (Fixed Image Display)
+   -------------------------------------------------------------------------- */
+.founder-card {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: clamp(2rem, 4vw, 4rem);
+  align-items: center;
+  background: rgba(10, 16, 29, 0.65);
+  backdrop-filter: blur(16px);
+  border: 1px solid var(--zavlo-border-light);
+  border-radius: var(--zavlo-radius-lg);
+  padding: clamp(1.75rem, 3.5vw, 3rem);
+  box-shadow: var(--zavlo-shadow-elevated);
+}
+
+.founder-portrait-wrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid var(--zavlo-border-teal);
+  box-shadow: 0 0 30px rgba(0, 240, 181, 0.2);
+  background: rgba(12, 21, 39, 0.9);
+}
+
+.founder-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 20%;
+  display: block;
+}
+
+.founder-info {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.founder-name {
+  font-size: clamp(1.5rem, 2.5vw, 2.25rem);
+  font-weight: var(--zavlo-font-weight-extrabold);
+  letter-spacing: var(--zavlo-tracking-tight);
+}
+
+.founder-role {
+  font-size: 0.8125rem;
+  font-weight: var(--zavlo-font-weight-bold);
+  letter-spacing: var(--zavlo-tracking-widest);
+  color: var(--zavlo-teal-400);
+  text-transform: uppercase;
+}
+
+.founder-quote {
+  font-size: clamp(0.9375rem, 1.4vw, 1.15rem);
+  color: var(--zavlo-text-secondary);
+  line-height: 1.7;
+  font-style: italic;
+}
+
+.founder-social {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--zavlo-cyan-400);
+  font-size: 0.875rem;
+  font-weight: var(--zavlo-font-weight-semibold);
+  margin-top: 0.25rem;
+  text-decoration: none;
+  transition: color 0.2s var(--zavlo-ease-out);
+  min-height: 44px;
+}
+
+.founder-social:hover { color: var(--zavlo-teal-400); }
+
+/* --------------------------------------------------------------------------
+   14. Contact / Deployment Section (WhatsApp Flow)
+   -------------------------------------------------------------------------- */
+.contact-container-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.15fr;
+  gap: clamp(2.5rem, 5vw, 5rem);
+  align-items: flex-start;
+}
+
+.contact-channels {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  margin-top: 2rem;
+}
+
+.contact-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: rgba(10, 16, 29, 0.6);
+  backdrop-filter: blur(16px);
+  border: 1px solid var(--zavlo-border-subtle);
+  border-radius: var(--zavlo-radius-md);
+  padding: 1rem 1.25rem;
+  text-decoration: none;
+  min-height: 52px;
+  transition: all var(--zavlo-dur-fast) var(--zavlo-ease-out);
+}
+
+.contact-item:hover {
+  border-color: var(--zavlo-teal-400);
+  transform: translateX(4px);
+}
+
+.contact-icon { color: var(--zavlo-teal-400); flex-shrink: 0; }
+.contact-meta { display: flex; flex-direction: column; }
+
+.contact-label {
+  font-size: var(--zavlo-text-micro);
+  font-weight: var(--zavlo-font-weight-bold);
+  letter-spacing: var(--zavlo-tracking-wider);
+  color: var(--zavlo-text-dim);
+  text-transform: uppercase;
+}
+
+.contact-val {
+  font-size: 0.9375rem;
+  color: var(--zavlo-text-primary);
+  font-weight: var(--zavlo-font-weight-medium);
+}
+
+.contact-form-card {
+  background: rgba(10, 16, 29, 0.7);
+  backdrop-filter: blur(16px);
+  border: 1px solid var(--zavlo-border-light);
+  border-radius: var(--zavlo-radius-lg);
+  padding: clamp(1.75rem, 3.5vw, 2.5rem);
+  box-shadow: var(--zavlo-shadow-elevated);
+}
+
+.form-group-wrap { display: flex; flex-direction: column; gap: 1rem; }
+.form-group-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.form-field { display: flex; flex-direction: column; gap: 0.35rem; }
+
+.form-field label {
+  font-size: var(--zavlo-text-caption);
+  font-weight: var(--zavlo-font-weight-semibold);
+  letter-spacing: var(--zavlo-tracking-wide);
+  color: var(--zavlo-text-muted);
+  text-transform: uppercase;
+}
+
+.form-field input,
+.form-field select,
+.form-field textarea {
+  width: 100%;
+  background: rgba(3, 5, 8, 0.7);
+  border: 1px solid var(--zavlo-border-subtle);
+  border-radius: var(--zavlo-radius-sm);
+  padding: 0.85rem 1rem;
+  color: var(--zavlo-text-primary);
+  font-family: var(--zavlo-font-sans);
+  font-size: 1rem; /* 16px to prevent iOS auto-zoom */
+  transition: border-color var(--zavlo-dur-fast) var(--zavlo-ease-out);
+}
+
+.form-field textarea { min-height: 100px; resize: vertical; }
+
+.form-field input:focus,
+.form-field select:focus,
+.form-field textarea:focus {
+  outline: none;
+  border-color: var(--zavlo-teal-400);
+  box-shadow: var(--zavlo-glow-teal-sm);
+}
+
+.form-feedback {
+  display: none;
+  background: rgba(0, 240, 181, 0.1);
+  border: 1px solid var(--zavlo-border-teal);
+  border-radius: var(--zavlo-radius-sm);
+  padding: 1.25rem;
+  text-align: center;
+  color: var(--zavlo-teal-400);
+  font-size: 0.9375rem;
+  margin-top: 1rem;
+}
+
+.form-feedback.active { display: block; }
+
+/* --------------------------------------------------------------------------
+   15. Minimal Footer
+   -------------------------------------------------------------------------- */
+.zavlo-footer {
+  position: relative;
+  z-index: var(--zavlo-z-content);
+  padding: 4rem 0 2rem;
+  border-top: 1px solid var(--zavlo-border-subtle);
+  background-color: rgba(3, 5, 8, 0.9);
+  backdrop-filter: blur(12px);
+}
+
+.footer-inner { display: flex; flex-direction: column; gap: 2rem; }
+
+.footer-top-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+}
+
+.footer-nav-list {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  list-style: none;
+  flex-wrap: wrap;
+}
+
+.footer-nav-list a {
+  font-size: 0.8125rem;
+  color: var(--zavlo-text-muted);
+  text-decoration: none;
+  transition: color var(--zavlo-dur-fast) var(--zavlo-ease-out);
+}
+
+.footer-nav-list a:hover { color: var(--zavlo-teal-400); }
+
+.footer-bottom-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--zavlo-border-subtle);
+  font-size: 0.75rem;
+  color: var(--zavlo-text-dim);
+}
+
+.footer-legal-links { display: flex; gap: 1.25rem; }
+.footer-legal-links a { color: var(--zavlo-text-dim); text-decoration: none; }
+.footer-legal-links a:hover { color: var(--zavlo-teal-400); }
+
+/* --------------------------------------------------------------------------
+   16. Legal Pages Styling
+   -------------------------------------------------------------------------- */
+.legal-header {
+  padding-top: 7rem;
+  padding-bottom: 2.5rem;
+  border-bottom: 1px solid var(--zavlo-border-subtle);
+}
+
+.legal-article-wrap {
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 4rem 0 7rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+}
+
+.legal-section-block { display: flex; flex-direction: column; gap: 0.875rem; }
+
+.legal-section-block h2 {
+  font-size: 1.35rem;
+  color: var(--zavlo-text-primary);
+  border-bottom: 1px solid var(--zavlo-border-subtle);
+  padding-bottom: 0.5rem;
+}
+
+.legal-section-block p,
+.legal-section-block li {
+  font-size: 0.9375rem;
+  color: var(--zavlo-text-muted);
+  line-height: 1.75;
+}
+
+.legal-section-block ul {
+  padding-left: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+/* --------------------------------------------------------------------------
+   17. Responsive Mobile Breakpoints
+   -------------------------------------------------------------------------- */
+@media (max-width: 1200px) {
+  .ecosystem-matrix, .tech-matrix { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 1040px) {
+  .nav-menu { display: none; }
+  .mobile-toggle { display: flex; }
+}
+
+@media (max-width: 900px) {
+  .showcase-grid,
+  .showcase-grid.reverse,
+  .contact-container-grid,
+  .founder-card {
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+  }
+
+  .founder-portrait-wrap { max-width: 220px; margin: 0 auto; }
+  .challenges-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .form-group-row { grid-template-columns: 1fr; }
+
+  .workflow-pipeline { flex-direction: column; gap: 1.25rem; }
+  .pipeline-connector { width: 2px; height: 24px; min-width: 2px; }
+}
+
+@media (max-width: 560px) {
+  .hero-section {
+    padding: 5rem 1rem 2rem;
+  }
+
+  .hero-content-center {
+    padding-top: clamp(28vh, 36vh, 42vh);
+  }
+
+  .hero-cinematic-title {
+    font-size: clamp(1.85rem, 8vw, 2.75rem);
+    line-height: 1.12;
+  }
+
+  .hero-tagline {
+    font-size: 0.9375rem;
+    margin-bottom: 1.75rem;
+  }
+
+  .hero-cinematic-cta {
+    flex-direction: column;
+    width: 100%;
+    gap: 0.75rem;
+  }
+
+  .hero-cinematic-cta .zavlo-btn {
+    width: 100%;
+  }
+
+  .ecosystem-matrix,
+  .tech-matrix,
+  .challenges-grid,
+  .spec-pills-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .zavlo-section {
+    padding: clamp(3.5rem, 8vh, 5.5rem) 0;
+  }
+
+  .section-title {
+    font-size: clamp(1.65rem, 7vw, 2.25rem);
+  }
+
+  .founder-card {
+    padding: 1.5rem 1.25rem;
+  }
+
+  .founder-info {
+    text-align: center;
+    align-items: center;
+  }
+
+  .contact-form-card {
+    padding: 1.5rem 1.25rem;
+  }
+
+  .footer-top-row, .footer-bottom-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.25rem;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   18. Accessibility — Reduced Motion
+   -------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

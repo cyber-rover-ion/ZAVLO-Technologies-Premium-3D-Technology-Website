@@ -1,0 +1,23 @@
+{
+  "name": "zavlo",
+  "version": "1.0.0",
+  "description": "ZAVLO Technologies — Connected Healthcare Infrastructure",
+  "main": "src/scripts/main.js",
+  "type": "module",
+  "scripts": {
+    "start": "python -m http.server 8080",
+    "test": "node --check src/scripts/main.js"
+  },
+  "keywords": [
+    "zavlo",
+    "healthcare",
+    "autonomous-logistics",
+    "smart-stations"
+  ],
+  "author": "ZAVLO Technologies",
+  "license": "ISC",
+  "dependencies": {
+    "animejs": "^4.5.0",
+    "three": "^0.186.1"
+  }
+}

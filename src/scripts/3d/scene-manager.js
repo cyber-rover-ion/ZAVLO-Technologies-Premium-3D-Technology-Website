@@ -134,6 +134,19 @@ export class Zavlo3DSceneManager {
       console.log(`[ZAVLO 3D Engine] Stage 6 Premium Active | Tier: ${this.deviceTier}`);
     } catch (err) {
       console.error('[ZAVLO 3D] Initialization failed:', err);
+
+      // Tear down any partially initialized renderer before showing the static fallback.
+      this.isRunning = false;
+      this.isInitialized = false;
+      if (this.rafId !== null) {
+        cancelAnimationFrame(this.rafId);
+        this.rafId = null;
+      }
+      if (this.renderer) {
+        this.renderer.dispose();
+        this.renderer = null;
+      }
+
       this.triggerFallback();
     }
   }

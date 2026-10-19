@@ -26,6 +26,8 @@ class ZavloAnimationEngine {
     
     this.cursor = { x: window.innerWidth / 2, y: window.innerHeight / 2, targetX: window.innerWidth / 2, targetY: window.innerHeight / 2 };
     this.rafId = null;
+    this.pointerRafId = null;
+    this.pointerVisibilityHandler = null;
     this.sceneManager = null;
     this._scrollChoreographyInitialized = false;
 
@@ -185,6 +187,11 @@ class ZavloAnimationEngine {
 
     // Continuous Animation Frame Loop
     const tick = () => {
+      if (document.hidden) {
+        this.rafId = null;
+        return;
+      }
+
       const lerpSpeed = this.isReducedMotion ? 1.0 : 0.085;
       this.scrollProgress += (this.targetScrollProgress - this.scrollProgress) * lerpSpeed;
       this.scrollVelocity *= 0.92;
@@ -215,6 +222,15 @@ class ZavloAnimationEngine {
       this.rafId = requestAnimationFrame(tick);
     };
 
+    this.pointerVisibilityHandler = () => {
+      if (document.hidden) {
+        if (this.rafId !== null) cancelAnimationFrame(this.rafId);
+        this.rafId = null;
+      } else if (this.rafId === null) {
+        this.rafId = requestAnimationFrame(tick);
+      }
+    };
+    document.addEventListener('visibilitychange', this.pointerVisibilityHandler);
     this.rafId = requestAnimationFrame(tick);
   }
 
@@ -284,6 +300,11 @@ class ZavloAnimationEngine {
     }, { passive: true });
 
     const updatePointerLight = () => {
+      if (document.hidden) {
+        this.pointerRafId = null;
+        return;
+      }
+
       this.cursor.x += (this.cursor.targetX - this.cursor.x) * 0.04;
       this.cursor.y += (this.cursor.targetY - this.cursor.y) * 0.04;
 
@@ -292,16 +313,31 @@ class ZavloAnimationEngine {
 
       ambientBloom.style.transform = `translate(calc(-50% + ${normX.toFixed(1)}px), calc(-50% + ${normY.toFixed(1)}px))`;
 
-      requestAnimationFrame(updatePointerLight);
+      this.pointerRafId = requestAnimationFrame(updatePointerLight);
     };
 
-    requestAnimationFrame(updatePointerLight);
+    const resumePointerLight = () => {
+      if (!document.hidden && this.pointerRafId === null) {
+        this.pointerRafId = requestAnimationFrame(updatePointerLight);
+      }
+    };
+    document.addEventListener('visibilitychange', resumePointerLight);
+    this.pointerVisibilityHandler = this.pointerVisibilityHandler || resumePointerLight;
+    this.pointerRafId = requestAnimationFrame(updatePointerLight);
   }
 
   destroy() {
-    if (this.rafId) {
+    if (this.rafId !== null) {
       cancelAnimationFrame(this.rafId);
       this.rafId = null;
+    }
+    if (this.pointerRafId !== null) {
+      cancelAnimationFrame(this.pointerRafId);
+      this.pointerRafId = null;
+    }
+    if (this.pointerVisibilityHandler) {
+      document.removeEventListener('visibilitychange', this.pointerVisibilityHandler);
+      this.pointerVisibilityHandler = null;
     }
   }
 }

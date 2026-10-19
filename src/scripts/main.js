@@ -11,9 +11,13 @@ class ZavloApp {
   constructor() {
     this.animation = animationEngine;
     this.sceneManager = new Zavlo3DSceneManager();
+    this.isInitialized = false;
   }
 
   init() {
+    if (this.isInitialized) return;
+    this.isInitialized = true;
+
     // 1. Initialize Central 3D Engine
     this.sceneManager.init();
 
@@ -56,6 +60,12 @@ class ZavloApp {
         mobileOverlay.classList.toggle('active', isOpen);
         document.body.style.overflow = isOpen ? 'hidden' : '';
 
+        if (isOpen) {
+          mobileOverlay.querySelector('.mobile-nav-link')?.focus({ preventScroll: true });
+        } else if (mobileOverlay.contains(document.activeElement)) {
+          mobileToggle.focus({ preventScroll: true });
+        }
+
         const lines = mobileToggle.querySelectorAll('.hamburger-line');
         if (lines.length >= 2) {
           if (isOpen) {
@@ -75,6 +85,16 @@ class ZavloApp {
 
       mobileOverlay.querySelectorAll('.mobile-nav-link').forEach(link => {
         link.addEventListener('click', () => toggleMenu(false));
+      });
+
+      document.addEventListener('click', (e) => {
+        if (
+          mobileOverlay.classList.contains('active') &&
+          !mobileOverlay.contains(e.target) &&
+          !mobileToggle.contains(e.target)
+        ) {
+          toggleMenu(false);
+        }
       });
 
       document.addEventListener('keydown', (e) => {
@@ -97,7 +117,8 @@ class ZavloApp {
           e.preventDefault();
           const offset = 80;
           const targetTop = targetEl.getBoundingClientRect().top + window.scrollY - offset;
-          window.scrollTo({ top: targetTop, behavior: 'smooth' });
+          const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+          window.scrollTo({ top: targetTop, behavior: reduceMotion ? 'auto' : 'smooth' });
         }
       });
     });
@@ -170,6 +191,20 @@ Sent through the ZAVLO Technologies website.`;
       // Official ZAVLO WhatsApp number: +91 9949663048 -> normalized: 919949663048
       const targetPhone = '919949663048';
       const whatsappUrl = `https://wa.me/${targetPhone}?text=${encodeURIComponent(whatsappMessage)}`;
+      const phoneDigits = phone.replace(/\D/g, '');
+      if (phoneDigits.length < 7 || phoneDigits.length > 15) {
+        alert('Please enter a valid phone number, including the country code if needed.');
+        document.getElementById('input-phone')?.focus();
+        return;
+      }
+
+      // Open synchronously during the submit gesture to reduce popup-blocker failures.
+      // The visible fallback link below remains available if the browser blocks it.
+      try {
+        window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
+      } catch (err) {
+        console.warn('[ZAVLO WhatsApp] Automatic opening was blocked; the fallback link will remain available.');
+      }
 
       const submitBtn = form.querySelector('button[type="submit"]');
       if (submitBtn) {
@@ -198,12 +233,8 @@ Sent through the ZAVLO Technologies website.`;
         `;
         feedback.classList.add('active');
 
-        // Open WhatsApp in a new tab/app
-        try {
-          window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
-        } catch (err) {
-          console.warn('[ZAVLO WhatsApp] Pop-up blocked, fallback link provided.');
-        }
+        // Automatic opening was attempted during the original submit gesture.
+        // Keep the explicit link available if the browser blocks the new tab.
       }, 400);
     });
   }

@@ -77,6 +77,16 @@ class ZavloApp {
         link.addEventListener('click', () => toggleMenu(false));
       });
 
+      document.addEventListener('click', (event) => {
+        if (
+          mobileOverlay.classList.contains('active') &&
+          !mobileOverlay.contains(event.target) &&
+          !mobileToggle.contains(event.target)
+        ) {
+          toggleMenu(false);
+        }
+      });
+
       document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape' && mobileOverlay.classList.contains('active')) {
           toggleMenu(false);

@@ -181,7 +181,7 @@ Sent through the ZAVLO Technologies website.`;
       // Official ZAVLO WhatsApp number: +91 9949663048 -> normalized: 919949663048
       const targetPhone = '919949663048';
       const whatsappUrl = `https://wa.me/${targetPhone}?text=${encodeURIComponent(whatsappMessage)}`;
-      const phoneDigits = phone.replace(/\\D/g, '');
+      const phoneDigits = phone.replace(/\D/g, '');
       if (phoneDigits.length < 7 || phoneDigits.length > 15) {
         alert('Please enter a valid phone number, including the country code if needed.');
         document.getElementById('input-phone')?.focus();

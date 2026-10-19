@@ -27,6 +27,7 @@ class ZavloAnimationEngine {
     this.cursor = { x: window.innerWidth / 2, y: window.innerHeight / 2, targetX: window.innerWidth / 2, targetY: window.innerHeight / 2 };
     this.rafId = null;
     this.pointerRafId = null;
+    this.scrollVisibilityHandler = null;
     this.pointerVisibilityHandler = null;
     this.sceneManager = null;
     this._scrollChoreographyInitialized = false;
@@ -222,7 +223,7 @@ class ZavloAnimationEngine {
       this.rafId = requestAnimationFrame(tick);
     };
 
-    this.pointerVisibilityHandler = () => {
+    this.scrollVisibilityHandler = () => {
       if (document.hidden) {
         if (this.rafId !== null) cancelAnimationFrame(this.rafId);
         this.rafId = null;
@@ -230,7 +231,7 @@ class ZavloAnimationEngine {
         this.rafId = requestAnimationFrame(tick);
       }
     };
-    document.addEventListener('visibilitychange', this.pointerVisibilityHandler);
+    document.addEventListener('visibilitychange', this.scrollVisibilityHandler);
     this.rafId = requestAnimationFrame(tick);
   }
 
@@ -321,8 +322,8 @@ class ZavloAnimationEngine {
         this.pointerRafId = requestAnimationFrame(updatePointerLight);
       }
     };
-    document.addEventListener('visibilitychange', resumePointerLight);
-    this.pointerVisibilityHandler = this.pointerVisibilityHandler || resumePointerLight;
+    this.pointerVisibilityHandler = resumePointerLight;
+    document.addEventListener('visibilitychange', this.pointerVisibilityHandler);
     this.pointerRafId = requestAnimationFrame(updatePointerLight);
   }
 
@@ -334,6 +335,10 @@ class ZavloAnimationEngine {
     if (this.pointerRafId !== null) {
       cancelAnimationFrame(this.pointerRafId);
       this.pointerRafId = null;
+    }
+    if (this.scrollVisibilityHandler) {
+      document.removeEventListener('visibilitychange', this.scrollVisibilityHandler);
+      this.scrollVisibilityHandler = null;
     }
     if (this.pointerVisibilityHandler) {
       document.removeEventListener('visibilitychange', this.pointerVisibilityHandler);
